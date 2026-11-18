@@ -4,7 +4,7 @@
 
 GPT Researcher 通过本地适配层接入 OpenAI 官方 Sign in with ChatGPT DevKit，使用授权账号的套餐能力调用公开的 Responses API。授权、权限检查、令牌刷新和响应完成检查由官方 SDK 处理。
 
-不需要配置 OpenAI API Key。当前模型为 `gpt-6.1-sol`，搜索使用 DDGS，正文筛选使用关键词，不调用付费向量接口。
+不需要配置 OpenAI API Key。当前模型为 `gpt-6.2-sol`，搜索使用 DDGS，正文筛选使用关键词，不调用付费向量接口。
 
 ## 使用
 
@@ -39,7 +39,7 @@ CLI 默认把报告和来源记录保存到 `D:\Artifacts\GPTResearcher\reports`
 | GPT Researcher | 0.16.1 |
 | MCP | assafelovic/gptr-mcp，固定提交见 upstream.json |
 | 运行环境 | Python 3.14、Node.js 24 |
-| 模型 | fast / smart / strategic 均为 `openai:gpt-6.1-sol` |
+| 模型 | fast / smart / strategic 均为 `openai:gpt-6.2-sol` |
 | 搜索 | DuckDuckGo 检索器使用 DDGS；DDGS 可调用多个公开搜索引擎 |
 | 常规研究 | 2 个规划查询，每个查询最多 3 条结果 |
 | 递归深度研究 | 深度 2、广度 2、并发 1 |

@@ -146,7 +146,7 @@ def main():
         result = asyncio.run(create_chat_completion(
             messages=[{"role": "system", "content": "Follow the user's exact output request."},
                       {"role": "user", "content": "Reply with exactly: GPT Researcher integration works."}],
-            model="gpt-6.1-sol", llm_provider="openai", stream=False))
+            model="gpt-6.2-sol", llm_provider="openai", stream=False))
         print(json.dumps({"response": result, "completed_model_requests": bridge.completed_requests}, ensure_ascii=False))
         if result.strip() != "GPT Researcher integration works.":
             raise RuntimeError("Unexpected integration probe response")
