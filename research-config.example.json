@@ -1,7 +1,7 @@
 {
-  "FAST_LLM": "openai:gpt-6.1-sol",
-  "SMART_LLM": "openai:gpt-6.1-sol",
-  "STRATEGIC_LLM": "openai:gpt-6.1-sol",
+  "FAST_LLM": "openai:gpt-6.2-sol",
+  "SMART_LLM": "openai:gpt-6.2-sol",
+  "STRATEGIC_LLM": "openai:gpt-6.2-sol",
   "CONTEXT_FILTER": "keyword",
   "RETRIEVER": "duckduckgo",
   "LANGUAGE": "Chinese",
