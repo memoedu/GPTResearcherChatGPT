@@ -77,6 +77,34 @@ CLI 默认把报告和来源记录保存到 `D:\Artifacts\GPTResearcher\reports`
 
 C 盘仅保留 Codex 必需的配置文件和指向 D 盘 Skill 的目录入口；沿用已有 Python、Node.js、PowerShell 安装。
 
+### macOS 套餐授权
+
+macOS worker 沿用仓库固定的官方 DevKit。它在当前登录用户的钥匙串内保存应用专用 AES 密钥，SDK 继续保存和恢复本应用目录内的加密状态。Windows 保留原 DPAPI 提供器与本机状态。
+
+在已安装原仓依赖和 SDK 的 Mac 账户上，从源码编译一次系统助手。后续运行使用同一份已验证的助手；替换二进制前，保留现有助手并检查钥匙串访问。
+
+```bash
+repo="$HOME/Agent/Projects/GPTResearcherChatGPT"
+runtime="$HOME/Agent/AppData/GPTResearcher"
+mkdir -p "$runtime/bin"
+test ! -e "$runtime/bin/gptr-keychain" && (umask 077 && xcrun swiftc -O "$repo/macos-keychain.swift" -o "$runtime/bin/gptr-keychain")
+codesign --verify --strict "$runtime/bin/gptr-keychain"
+```
+
+系统助手在拥有可用登录 Keychain 的 macOS 登录会话中运行。通过远程命令启动时，可把进程交给该用户的 `gui/<uid>` launchd 域。环境不可用时，SDK 将返回存储错误并保留原状态。登录时使用 Mac 会话的终端运行以下命令，保持进程存活，在能访问同一回环地址的浏览器打开本次生成的 `$runtime/chatgpt/authorization-url.txt`。文件中的授权 URL 仅用于当前流程。已有 Codex 或其他应用的登录态无需参与该命令。
+
+```bash
+repo="$HOME/Agent/Projects/GPTResearcherChatGPT"
+runtime="$HOME/Agent/AppData/GPTResearcher"
+GPTR_RUNTIME="$runtime" GPTR_DATA="$runtime" "$HOME/.local/bin/node" "$repo/chatgpt-worker.mjs" signin
+```
+
+合成验收通过当前登录钥匙串的专用测试条目调用 SDK，在两个 Node 进程间读回同一份加密状态。脚本仅清理自己的随机测试条目和临时目录。
+
+```bash
+node "$repo/verify-macos-keychain.mjs" "$runtime" "$runtime/bin/gptr-keychain"
+```
+
 ## 验证与维护
 
 MCP 现通过 `http://127.0.0.1:19782/mcp/gpt-researcher` 共享一份后端，空闲 10 分钟后回收，活动或排队调用受到保护。研究操作串行执行；完成的对象按需从 `D:\AppData\GPTResearcher\mcp-state.sqlite3` 恢复，不在内存中无限累积。状态库上限为 256 MiB，满额时保留既有内容并拒绝新写入，不自动删除成果。`GPTR_MCP_STATE` 仅用于验收时指定隔离状态库。
