@@ -1,14 +1,18 @@
 import { createInterface } from 'node:readline';
 import { pathToFileURL } from 'node:url';
 import { join } from 'node:path';
-import { writeFile, mkdir } from 'node:fs/promises';
-import { credentialEncryption } from './windows-encryption.mjs';
+import { writeFile } from 'node:fs/promises';
+import { createMacOSCredentialEncryption } from './macos-encryption.mjs';
+import { credentialEncryption as windowsCredentialEncryption } from './windows-encryption.mjs';
 
 const runtimeRoot = process.env.GPTR_RUNTIME ?? 'D:/Applications/GPTResearcher';
 const dataRoot = process.env.GPTR_DATA ?? 'D:/AppData/GPTResearcher';
 const sdk = join(runtimeRoot, 'siwc/node_modules/@siwc/local/dist/index.js');
 const { createChatGPT } = await import(pathToFileURL(sdk).href);
 const storageDir = join(dataRoot, 'chatgpt');
+const credentialEncryption = process.platform === 'darwin'
+  ? createMacOSCredentialEncryption(join(runtimeRoot, 'bin', 'gptr-keychain'))
+  : windowsCredentialEncryption;
 const client = createChatGPT({
   appName: 'GPT Researcher', appId: 'gpt-researcher', storageDir,
   redirectPort: 0, sendHostId: true, credentialEncryption,
